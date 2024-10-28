@@ -1,5 +1,5 @@
 ## YAML Template.
----
+
 services:
   registry-discovery:
     container_name: id-eureka

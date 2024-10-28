@@ -1,0 +1,4 @@
+com\bartech\pub\controller\PubRestController.class
+com\bartech\pub\entities\Pub.class
+com\bartech\pub\respository\PubRepository.class
+com\bartech\pub\PubApplication.class

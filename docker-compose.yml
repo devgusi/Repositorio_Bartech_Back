@@ -1,0 +1,107 @@
+## YAML Template.
+---
+services:
+  registry-discovery:
+    container_name: id-eureka
+    image: msanchezsevi/microservice-docker-eurekaserver:0.0.1-SNAPSHOT
+    ports:
+      - 8761:8761
+    environment:
+      - JAVA_OPTS=
+        -Xms256M
+        -Xmx256M
+
+  user:
+    container_name: user
+    image: msanchezsevi/microservice-docker-user:0.0.1-SNAPSHOT
+    environment:
+      - JAVA_OPTS=
+        -Xms256M
+        -Xmx256M
+        -DEUREKA_SERVER=http://registry-discovery:8761/eureka/
+    depends_on:
+      - registry-discovery
+    ports:
+      - 8081:8081
+
+  auth:
+    container_name: auth
+    image: msanchezsevi/microservice-docker-auth-service:0.0.1-SNAPSHOT
+    environment:
+      - JAVA_OPTS=
+        -Xms256M
+        -Xmx256M
+        -DEUREKA_SERVER=http://registry-discovery:8761/eureka/
+
+    depends_on:
+      - registry-discovery
+    ports:
+      - 8084:8084
+
+  pub:
+    container_name: pub
+    image: msanchezsevi/microservice-docker-pub:0.0.1-SNAPSHOT
+    environment:
+      - JAVA_OPTS=
+        -Xms256M
+        -Xmx256M
+        -DEUREKA_SERVER=http://registry-discovery:8761/eureka/
+
+    depends_on:
+      - registry-discovery
+    ports:
+      - 8082:8082
+
+  song:
+    container_name: song
+    image: msanchezsevi/microservice-docker-song:0.0.1-SNAPSHOT
+    environment:
+      - JAVA_OPTS=
+        -Xms256M
+        -Xmx256M
+        -DEUREKA_SERVER=http://registry-discovery:8761/eureka/
+
+    depends_on:
+      - registry-discovery
+    ports:
+      - 8083:8083
+
+  gateway:
+    container_name: gateway
+    image: msanchezsevi/microservice-docker-gateway-service:0.0.1-SNAPSHOT
+    environment:
+      - JAVA_OPTS=
+        -Xms256M
+        -Xmx256M
+        -DEUREKA_SERVER=http://registry-discovery:8761/eureka/
+
+    depends_on:
+      - registry-discovery
+      - auth
+    ports:
+      - 8080:8080
+
+  postgres_db:
+    container_name: postgres
+    image: postgres:latest
+    ports:
+      - 5432:5432
+    volumes:
+      - ./dbfiles:/docker-entrypoint-initdb.d
+      - ./postgres_data:/var/lib/postgresql/data
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: admin
+      POSTGRES_DB: bartech
+
+
+  pgadmin4:
+    image: dpage/pgadmin4
+    restart: always
+    environment:
+      PGADMIN_DEFAULT_EMAIL: "admin@admin.com"
+      PGADMIN_DEFAULT_PASSWORD: "qwerty"
+    ports:
+      - 80:80
+    depends_on:
+      - postgres_db

@@ -1,0 +1,4 @@
+com\bartech\user\SongApplication.class
+com\bartech\user\controller\SongRestController.class
+com\bartech\user\entities\Song.class
+com\bartech\user\respository\SongRepository.class
